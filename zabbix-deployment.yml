@@ -1,6 +1,6 @@
 ---
 - name: Install and configure Zabbix Server 7.2 with MySQL on Ubuntu 24.04
-  hosts: zabbix-server
+  hosts: all
   become: yes
   vars_files:
     - vault.yml   # Load encrypted passwords from vault
