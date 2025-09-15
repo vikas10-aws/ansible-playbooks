@@ -1,0 +1,2 @@
+db_zabbix_password: "zabbix123"
+db_root_password: "zabbix123"
