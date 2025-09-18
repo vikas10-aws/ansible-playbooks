@@ -1,0 +1,21 @@
+---
+- name: Install Zabbix agent2 and plugins
+  ansible.builtin.apt:
+    name:
+      - zabbix-agent2
+      - zabbix-agent2-plugin-mongodb
+      - zabbix-agent2-plugin-mssql
+      - zabbix-agent2-plugin-postgresql
+    state: present
+
+- name: Start and enable Zabbix Agent2
+  ansible.builtin.systemd:
+    name: zabbix-agent2
+    enabled: yes
+    state: restarted
+
+- name: Ensure Apache is running (for frontend)
+  ansible.builtin.systemd:
+    name: apache2
+    enabled: yes
+    state: restarted
