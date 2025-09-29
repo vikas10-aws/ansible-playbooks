@@ -1,9 +1,0 @@
-# Zabbix Agent2 configuration file
-
-Server={{ zabbix_server_host | default('127.0.0.1') }}
-ServerActive={{ zabbix_server_host | default('127.0.0.1') }}
-Hostname={{ Semaphore }}
-
-LogFile=/var/log/zabbix/zabbix_agent2.log
-PidFile=/var/run/zabbix/zabbix_agent2.pid
-Include=/etc/zabbix/zabbix_agent2.d/*.conf
