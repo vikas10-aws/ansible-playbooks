@@ -1,0 +1,59 @@
+---
+- name: Handle Low Disk Space Alert
+  hosts: zabbix-server
+  become: yes
+
+  tasks:
+    - name: Check disk usage
+      command: df -h /
+      register: disk_usage
+      changed_when: false
+
+    - name: Show disk usage before cleanup
+      debug:
+        msg: "{{ disk_usage.stdout_lines }}"
+
+    - name: Clean /tmp directory
+      file:
+        path: /tmp
+        state: absent
+      ignore_errors: yes
+
+    - name: Recreate /tmp directory
+      file:
+        path: /tmp
+        state: directory
+        mode: '1777'
+
+    - name: Clean journal logs older than 7 days
+      command: journalctl --vacuum-time=7d
+      ignore_errors: yes
+
+    - name: Clean apt/yum cache
+      block:
+        - name: Check if apt is present
+          stat:
+            path: /usr/bin/apt
+          register: apt_check
+
+        - name: Clean apt cache
+          command: apt-get clean
+          when: apt_check.stat.exists
+
+        - name: Check if yum is present
+          stat:
+            path: /usr/bin/yum
+          register: yum_check
+
+        - name: Clean yum cache
+          command: yum clean all
+          when: yum_check.stat.exists
+
+    - name: Show disk usage after cleanup
+      command: df -h /
+      register: disk_usage_after
+      changed_when: false
+
+    - name: Print disk usage after cleanup
+      debug:
+        msg: "{{ disk_usage_after.stdout_lines }}"
